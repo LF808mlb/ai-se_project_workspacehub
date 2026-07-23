@@ -4,14 +4,14 @@ import {
   deleteTask,
   getTaskById,
   listTasks,
-  updateTask
+  updateTask,
 } from "../services/taskService";
 import { sendSuccess } from "../utils/apiResponse";
 
 export const listTasksController = async (req: Request, res: Response) => {
   const tasks = await listTasks(
     req.auth!.organizationId,
-    req.query.projectId as string | undefined
+    req.query.projectId as string | undefined,
   );
   return sendSuccess(res, tasks);
 };

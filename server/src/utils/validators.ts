@@ -3,7 +3,7 @@ import type {
   FeatureFlagKey,
   TaskPriority,
   TaskStatus,
-  UserRole
+  UserRole,
 } from "../types/domain";
 
 export const requireString = (value: unknown, field: string): string => {
@@ -51,7 +51,7 @@ export const requireSlug = (value: unknown): string => {
   if (!slugRegex.test(slug)) {
     throw new AppError(
       "Slug may only contain lowercase letters, numbers, and hyphens",
-      400
+      400,
     );
   }
 

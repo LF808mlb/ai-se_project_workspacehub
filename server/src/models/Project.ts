@@ -5,27 +5,27 @@ const projectSchema = new Schema(
     organizationId: {
       type: Schema.Types.ObjectId,
       ref: "Organization",
-      required: true
+      required: true,
     },
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     description: {
       type: String,
       default: "",
-      trim: true
+      trim: true,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 export type ProjectDocument = InferSchemaType<typeof projectSchema> & {

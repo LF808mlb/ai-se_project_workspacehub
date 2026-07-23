@@ -5,38 +5,38 @@ const userSchema = new Schema(
     firstName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
     passwordHash: {
       type: String,
-      required: true
+      required: true,
     },
     organizationId: {
       type: Schema.Types.ObjectId,
       ref: "Organization",
-      required: true
+      required: true,
     },
     role: {
       type: String,
       enum: ["owner", "admin", "member"],
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 export type UserDocument = InferSchemaType<typeof userSchema> & {

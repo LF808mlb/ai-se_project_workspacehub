@@ -3,15 +3,19 @@ import {
   useEffect,
   useMemo,
   useState,
-  type PropsWithChildren
+  type PropsWithChildren,
 } from "react";
-import { authService, type LoginPayload, type RegisterPayload } from "../services/authService";
+import {
+  authService,
+  type LoginPayload,
+  type RegisterPayload,
+} from "../services/authService";
 import { setAuthToken } from "../services/api";
 import type {
   FeatureFlags,
   Organization,
   User,
-  UserRole
+  UserRole,
 } from "../types/models";
 
 interface AuthContextValue {
@@ -31,17 +35,23 @@ interface AuthContextValue {
 
 const STORAGE_KEY = "workspacehub_token";
 
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(
+  undefined,
+);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [token, setToken] = useState<string | null>(
-    window.localStorage.getItem(STORAGE_KEY)
+    window.localStorage.getItem(STORAGE_KEY),
   );
   const [user, setUser] = useState<User | null>(null);
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const applySession = (nextToken: string, nextUser: User, nextOrganization: Organization) => {
+  const applySession = (
+    nextToken: string,
+    nextUser: User,
+    nextOrganization: Organization,
+  ) => {
     window.localStorage.setItem(STORAGE_KEY, nextToken);
     setAuthToken(nextToken);
     setToken(nextToken);
@@ -115,9 +125,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       },
       isFeatureEnabled: (featureKey: keyof FeatureFlags) => {
         return Boolean(organization?.featureFlags[featureKey]);
-      }
+      },
     }),
-    [token, user, organization, loading]
+    [token, user, organization, loading],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

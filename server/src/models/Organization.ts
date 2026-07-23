@@ -5,35 +5,37 @@ const organizationSchema = new Schema(
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     slug: {
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     featureFlags: {
       scheduling: {
         type: Boolean,
-        default: true
+        default: true,
       },
       advancedReports: {
         type: Boolean,
-        default: true
+        default: true,
       },
       customBranding: {
         type: Boolean,
-        default: true
-      }
-    }
+        default: true,
+      },
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
-export type OrganizationDocument = InferSchemaType<typeof organizationSchema> & {
+export type OrganizationDocument = InferSchemaType<
+  typeof organizationSchema
+> & {
   _id: string;
 };
 

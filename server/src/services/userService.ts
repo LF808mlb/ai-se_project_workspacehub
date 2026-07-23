@@ -6,7 +6,9 @@ import { parseRole, requireString } from "../utils/validators";
 import { canChangeUserRole, canManageUsers } from "./permissionService";
 
 export const listUsers = async (organizationId: string) => {
-  return User.find({ organizationId }).select("-passwordHash").sort({ createdAt: 1 });
+  return User.find({ organizationId })
+    .select("-passwordHash")
+    .sort({ createdAt: 1 });
 };
 
 export const getUserById = async (organizationId: string, id: string) => {
@@ -19,13 +21,13 @@ export const getUserById = async (organizationId: string, id: string) => {
 export const updateUser = async (
   actor: AuthPayload,
   userId: string,
-  payload: Record<string, unknown>
+  payload: Record<string, unknown>,
 ) => {
   const user = await findByIdInOrganization(
     User,
     userId,
     actor.organizationId,
-    "User"
+    "User",
   );
 
   if (!canManageUsers(actor, String(user._id))) {

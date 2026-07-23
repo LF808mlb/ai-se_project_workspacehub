@@ -4,7 +4,7 @@ import {
   deleteBooking,
   getBookingById,
   listBookings,
-  updateBooking
+  updateBooking,
 } from "../services/bookingService";
 import { sendSuccess } from "../utils/apiResponse";
 

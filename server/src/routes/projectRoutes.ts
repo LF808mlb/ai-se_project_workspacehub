@@ -4,7 +4,7 @@ import {
   deleteProjectController,
   getProjectController,
   listProjectsController,
-  updateProjectController
+  updateProjectController,
 } from "../controllers/projectController";
 import { requireAuth } from "../middleware/auth";
 import { asyncHandler } from "../utils/asyncHandler";

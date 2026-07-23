@@ -4,7 +4,7 @@ import {
   deleteTaskController,
   getTaskController,
   listTasksController,
-  updateTaskController
+  updateTaskController,
 } from "../controllers/taskController";
 import { requireAuth } from "../middleware/auth";
 import { asyncHandler } from "../utils/asyncHandler";

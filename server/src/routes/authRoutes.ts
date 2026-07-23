@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   loginController,
   meController,
-  registerController
+  registerController,
 } from "../controllers/authController";
 import { requireAuth } from "../middleware/auth";
 import { asyncHandler } from "../utils/asyncHandler";

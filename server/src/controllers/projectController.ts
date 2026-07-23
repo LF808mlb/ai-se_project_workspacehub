@@ -4,7 +4,7 @@ import {
   deleteProject,
   getProjectById,
   listProjects,
-  updateProject
+  updateProject,
 } from "../services/projectService";
 import { sendSuccess } from "../utils/apiResponse";
 

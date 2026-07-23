@@ -5,7 +5,7 @@ export const findByIdInOrganization = async (
   model: Model<any>,
   id: string,
   organizationId: string,
-  resourceName: string
+  resourceName: string,
 ) => {
   const document = await model.findOne({ _id: id, organizationId });
 

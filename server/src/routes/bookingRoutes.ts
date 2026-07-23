@@ -4,7 +4,7 @@ import {
   deleteBookingController,
   getBookingController,
   listBookingsController,
-  updateBookingController
+  updateBookingController,
 } from "../controllers/bookingController";
 import { requireAuth } from "../middleware/auth";
 import { requireFeatureFlag } from "../middleware/requireFeatureFlag";
