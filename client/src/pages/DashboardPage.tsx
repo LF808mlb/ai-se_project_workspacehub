@@ -133,31 +133,35 @@ export const DashboardPage = () => {
               Manage tasks
             </Link>
           </div>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4">
             {upcomingTasks.length ? (
-              upcomingTasks.map((task) => (
-                <div
-                  className="rounded-[12px] border border-slate-200 p-[18px]"
-                  key={task._id}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <h3 className="font-semibold text-ink">{task.title}</h3>
-                      <p className="text-[13px] text-slate-500">
-                        Due {formatDateTime(task.dueDate)}
-                      </p>
+              <ul className="space-y-3">
+                {upcomingTasks.map((task) => (
+                  <li
+                    className="rounded-[12px] border border-slate-200 p-[18px]"
+                    key={task._id}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <h3 className="font-semibold text-ink">
+                          {task.title}
+                        </h3>
+                        <p className="text-[13px] text-slate-500">
+                          Due {formatDateTime(task.dueDate)}
+                        </p>
+                      </div>
+                      <span
+                        className={[
+                          "rounded-[6px] px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide",
+                          statusBadgeStyles[task.status],
+                        ].join(" ")}
+                      >
+                        {task.status.replace("_", " ")}
+                      </span>
                     </div>
-                    <span
-                      className={[
-                        "rounded-[6px] px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide",
-                        statusBadgeStyles[task.status],
-                      ].join(" ")}
-                    >
-                      {task.status.replace("_", " ")}
-                    </span>
-                  </div>
-                </div>
-              ))
+                  </li>
+                ))}
+              </ul>
             ) : (
               <StatusPanel
                 title="No upcoming tasks"
@@ -169,10 +173,10 @@ export const DashboardPage = () => {
         <div className="space-y-6">
           <div className="rounded-[20px] bg-white p-8 shadow-sm">
             <h2 className="text-xl font-bold text-ink">Feature flags</h2>
-            <div className="mt-4 space-y-3">
+            <ul className="mt-4 space-y-3">
               {Object.entries(organization?.featureFlags ?? {}).map(
                 ([key, value]) => (
-                  <div
+                  <li
                     className="flex items-center justify-between rounded-[12px] border border-slate-200 p-[18px]"
                     key={key}
                   >
@@ -180,28 +184,32 @@ export const DashboardPage = () => {
                       {key.replace(/([A-Z])/g, " $1")}
                     </span>
                     <Checkbox checked={value} disabled />
-                  </div>
+                  </li>
                 ),
               )}
-            </div>
+            </ul>
           </div>
           <div className="rounded-[20px] bg-white p-8 shadow-sm">
             <h2 className="text-xl font-bold text-ink">Scheduling</h2>
             {isFeatureEnabled("scheduling") ? (
-              <div className="mt-4 space-y-3">
+              <div className="mt-4">
                 {data.bookings.length ? (
-                  data.bookings.slice(0, 3).map((booking) => (
-                    <div
-                      className="rounded-2xl border border-slate-200 px-4 py-3"
-                      key={booking._id}
-                    >
-                      <p className="font-medium text-ink">{booking.title}</p>
-                      <p className="text-sm text-slate-500">
-                        {formatDateTime(booking.startsAt)} to{" "}
-                        {formatDateTime(booking.endsAt)}
-                      </p>
-                    </div>
-                  ))
+                  <ul className="space-y-3">
+                    {data.bookings.slice(0, 3).map((booking) => (
+                      <li
+                        className="rounded-2xl border border-slate-200 px-4 py-3"
+                        key={booking._id}
+                      >
+                        <p className="font-medium text-ink">
+                          {booking.title}
+                        </p>
+                        <p className="text-sm text-slate-500">
+                          {formatDateTime(booking.startsAt)} to{" "}
+                          {formatDateTime(booking.endsAt)}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
                   <p className="mt-4 text-sm text-slate-500">
                     No upcoming bookings yet.

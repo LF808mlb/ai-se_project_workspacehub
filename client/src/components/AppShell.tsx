@@ -21,29 +21,43 @@ export const AppShell = () => {
               <p className="text-xs font-bold uppercase text-brand">
                 {organization?.slug}
               </p>
-              <h1 className="text-2xl font-extrabold text-ink">WorkspaceHub</h1>
+              <p className="text-2xl font-extrabold text-ink">WorkspaceHub</p>
             </div>
-            <nav className="flex flex-wrap gap-2">
-              <NavLink className={navClassName} to="/">
-                Dashboard
-              </NavLink>
-              <NavLink className={navClassName} to="/projects">
-                Projects
-              </NavLink>
-              <NavLink className={navClassName} to="/tasks">
-                Tasks
-              </NavLink>
-              {isFeatureEnabled("scheduling") ? (
-                <NavLink className={navClassName} to="/bookings">
-                  Bookings
-                </NavLink>
-              ) : null}
-              <NavLink className={navClassName} to="/settings/organization">
-                Organization
-              </NavLink>
-              <NavLink className={navClassName} to="/settings/features">
-                Feature Flags
-              </NavLink>
+            <nav>
+              <ul className="flex flex-wrap gap-2">
+                <li>
+                  <NavLink className={navClassName} to="/">
+                    Dashboard
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className={navClassName} to="/projects">
+                    Projects
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className={navClassName} to="/tasks">
+                    Tasks
+                  </NavLink>
+                </li>
+                {isFeatureEnabled("scheduling") ? (
+                  <li>
+                    <NavLink className={navClassName} to="/bookings">
+                      Bookings
+                    </NavLink>
+                  </li>
+                ) : null}
+                <li>
+                  <NavLink className={navClassName} to="/settings/organization">
+                    Organization
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink className={navClassName} to="/settings/features">
+                    Feature Flags
+                  </NavLink>
+                </li>
+              </ul>
             </nav>
             <div className="flex items-center gap-3">
               <div className="text-right">

@@ -185,29 +185,32 @@ export const ProjectDetailsPage = () => {
               Open task board
             </Link>
           </div>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4">
             {tasks.length ? (
-              tasks.map((task) => (
-                <article
-                  className="rounded-2xl border border-slate-200 p-4"
-                  key={task._id}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h3 className="font-medium text-ink">{task.title}</h3>
-                      <p className="mt-1 text-sm text-slate-500">
-                        {task.description}
+              <ul className="space-y-3">
+                {tasks.map((task) => (
+                  <li key={task._id}>
+                    <article className="rounded-2xl border border-slate-200 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <h3 className="font-medium text-ink">
+                            {task.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-slate-500">
+                            {task.description}
+                          </p>
+                        </div>
+                        <span className="rounded-[10px] bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-600">
+                          {task.status.replace("_", " ")}
+                        </span>
+                      </div>
+                      <p className="mt-3 text-sm text-slate-500">
+                        Due {formatDateTime(task.dueDate)}
                       </p>
-                    </div>
-                    <span className="rounded-[10px] bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-600">
-                      {task.status.replace("_", " ")}
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm text-slate-500">
-                    Due {formatDateTime(task.dueDate)}
-                  </p>
-                </article>
-              ))
+                    </article>
+                  </li>
+                ))}
+              </ul>
             ) : (
               <StatusPanel
                 title="No tasks yet"

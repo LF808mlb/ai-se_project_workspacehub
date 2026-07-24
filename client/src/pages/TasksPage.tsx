@@ -332,130 +332,141 @@ export const TasksPage = () => {
             </button>
           </div>
         </form>
-        <div className="space-y-4">
-          {tasks.length ? (
-            tasks.map((task) => {
+        {tasks.length ? (
+          <ul className="space-y-4">
+            {tasks.map((task) => {
               const canEdit = canEditTask(user, task);
               const formState = taskEdits[task._id];
 
               return (
-                <article
-                  className="rounded-3xl bg-white p-6 shadow-sm"
-                  key={task._id}
-                >
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <input
-                      className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleTaskEdit(task._id, "title", event.target.value)
-                      }
-                      value={formState?.title ?? task.title}
-                    />
-                    <textarea
-                      className="min-h-24 rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleTaskEdit(
-                          task._id,
-                          "description",
-                          event.target.value,
-                        )
-                      }
-                      value={formState?.description ?? task.description}
-                    />
-                    <select
-                      className={`${selectClassName} disabled:bg-slate-100`}
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleTaskEdit(task._id, "status", event.target.value)
-                      }
-                      style={selectCaretStyle}
-                      value={formState?.status ?? task.status}
-                    >
-                      <option value="todo">Todo</option>
-                      <option value="in_progress">In progress</option>
-                      <option value="done">Done</option>
-                    </select>
-                    <select
-                      className={`${selectClassName} disabled:bg-slate-100`}
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleTaskEdit(task._id, "priority", event.target.value)
-                      }
-                      style={selectCaretStyle}
-                      value={formState?.priority ?? task.priority}
-                    >
-                      <option value="low">Low priority</option>
-                      <option value="medium">Medium priority</option>
-                      <option value="high">High priority</option>
-                    </select>
-                    <select
-                      className={`${selectClassName} disabled:bg-slate-100`}
-                      disabled={!isPrivilegedRole(user?.role)}
-                      onChange={(event) =>
-                        handleTaskEdit(
-                          task._id,
-                          "assignedTo",
-                          event.target.value,
-                        )
-                      }
-                      style={selectCaretStyle}
-                      value={formState?.assignedTo ?? task.assignedTo ?? ""}
-                    >
-                      <option value="">Unassigned</option>
-                      {users.map((assignee) => (
-                        <option key={assignee._id} value={assignee._id}>
-                          {assignee.firstName} {assignee.lastName}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleTaskEdit(task._id, "dueDate", event.target.value)
-                      }
-                      type="date"
-                      value={
-                        formState?.dueDate ?? formatDateInput(task.dueDate)
-                      }
-                    />
-                  </div>
-                  {taskErrors[task._id] ? (
-                    <p className="mt-4 text-sm text-danger">
-                      {taskErrors[task._id]}
-                    </p>
-                  ) : null}
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <button
-                      className="rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={!canEdit}
-                      onClick={() => void handleSaveTask(task._id)}
-                      type="button"
-                    >
-                      Save
-                    </button>
-                    {canDeleteResources(user) ? (
+                <li key={task._id}>
+                  <article className="rounded-3xl bg-white p-6 shadow-sm">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <input
+                        className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleTaskEdit(task._id, "title", event.target.value)
+                        }
+                        value={formState?.title ?? task.title}
+                      />
+                      <textarea
+                        className="min-h-24 rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleTaskEdit(
+                            task._id,
+                            "description",
+                            event.target.value,
+                          )
+                        }
+                        value={formState?.description ?? task.description}
+                      />
+                      <select
+                        className={`${selectClassName} disabled:bg-slate-100`}
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleTaskEdit(
+                            task._id,
+                            "status",
+                            event.target.value,
+                          )
+                        }
+                        style={selectCaretStyle}
+                        value={formState?.status ?? task.status}
+                      >
+                        <option value="todo">Todo</option>
+                        <option value="in_progress">In progress</option>
+                        <option value="done">Done</option>
+                      </select>
+                      <select
+                        className={`${selectClassName} disabled:bg-slate-100`}
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleTaskEdit(
+                            task._id,
+                            "priority",
+                            event.target.value,
+                          )
+                        }
+                        style={selectCaretStyle}
+                        value={formState?.priority ?? task.priority}
+                      >
+                        <option value="low">Low priority</option>
+                        <option value="medium">Medium priority</option>
+                        <option value="high">High priority</option>
+                      </select>
+                      <select
+                        className={`${selectClassName} disabled:bg-slate-100`}
+                        disabled={!isPrivilegedRole(user?.role)}
+                        onChange={(event) =>
+                          handleTaskEdit(
+                            task._id,
+                            "assignedTo",
+                            event.target.value,
+                          )
+                        }
+                        style={selectCaretStyle}
+                        value={formState?.assignedTo ?? task.assignedTo ?? ""}
+                      >
+                        <option value="">Unassigned</option>
+                        {users.map((assignee) => (
+                          <option key={assignee._id} value={assignee._id}>
+                            {assignee.firstName} {assignee.lastName}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleTaskEdit(
+                            task._id,
+                            "dueDate",
+                            event.target.value,
+                          )
+                        }
+                        type="date"
+                        value={
+                          formState?.dueDate ?? formatDateInput(task.dueDate)
+                        }
+                      />
+                    </div>
+                    {taskErrors[task._id] ? (
+                      <p className="mt-4 text-sm text-danger">
+                        {taskErrors[task._id]}
+                      </p>
+                    ) : null}
+                    <div className="mt-4 flex flex-wrap gap-3">
                       <button
-                        className="rounded-[10px] px-4 py-2 text-sm font-normal text-danger transition hover:bg-rose-50 active:opacity-70"
-                        onClick={() => void handleDeleteTask(task._id)}
+                        className="rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={!canEdit}
+                        onClick={() => void handleSaveTask(task._id)}
                         type="button"
                       >
-                        Delete
+                        Save
                       </button>
-                    ) : null}
-                  </div>
-                </article>
+                      {canDeleteResources(user) ? (
+                        <button
+                          className="rounded-[10px] px-4 py-2 text-sm font-normal text-danger transition hover:bg-rose-50 active:opacity-70"
+                          onClick={() => void handleDeleteTask(task._id)}
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      ) : null}
+                    </div>
+                  </article>
+                </li>
               );
-            })
-          ) : (
-            <StatusPanel
-              title="No tasks"
-              message="Create the first task for this organization."
-            />
-          )}
-        </div>
+            })}
+          </ul>
+        ) : (
+          <StatusPanel
+            title="No tasks"
+            message="Create the first task for this organization."
+          />
+        )}
       </section>
     </div>
   );

@@ -248,96 +248,100 @@ export const BookingsPage = () => {
             </button>
           </div>
         </form>
-        <div className="space-y-4">
-          {bookings.length ? (
-            bookings.map((booking) => {
+        {bookings.length ? (
+          <ul className="space-y-4">
+            {bookings.map((booking) => {
               const canEdit = canEditBooking(user, booking);
               const formState = bookingEdits[booking._id];
 
               return (
-                <article
-                  className="rounded-3xl bg-white p-6 shadow-sm"
-                  key={booking._id}
-                >
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <input
-                      className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleEdit(booking._id, "title", event.target.value)
-                      }
-                      value={formState?.title ?? booking.title}
-                    />
-                    <textarea
-                      className="min-h-24 rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleEdit(
-                          booking._id,
-                          "description",
-                          event.target.value,
-                        )
-                      }
-                      value={formState?.description ?? booking.description}
-                    />
-                    <input
-                      className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleEdit(booking._id, "startsAt", event.target.value)
-                      }
-                      type="datetime-local"
-                      value={
-                        formState?.startsAt ??
-                        formatDateTimeInput(booking.startsAt)
-                      }
-                    />
-                    <input
-                      className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100"
-                      disabled={!canEdit}
-                      onChange={(event) =>
-                        handleEdit(booking._id, "endsAt", event.target.value)
-                      }
-                      type="datetime-local"
-                      value={
-                        formState?.endsAt ?? formatDateTimeInput(booking.endsAt)
-                      }
-                    />
-                  </div>
-                  {bookingErrors[booking._id] ? (
-                    <p className="mt-4 text-sm text-danger">
-                      {bookingErrors[booking._id]}
-                    </p>
-                  ) : null}
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <button
-                      className="rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={!canEdit}
-                      onClick={() => void handleSave(booking._id)}
-                      type="button"
-                    >
-                      Save
-                    </button>
-                    {canDeleteResources(user) ? (
+                <li key={booking._id}>
+                  <article className="rounded-3xl bg-white p-6 shadow-sm">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <input
+                        className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleEdit(booking._id, "title", event.target.value)
+                        }
+                        value={formState?.title ?? booking.title}
+                      />
+                      <textarea
+                        className="min-h-24 rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100 md:col-span-2"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleEdit(
+                            booking._id,
+                            "description",
+                            event.target.value,
+                          )
+                        }
+                        value={formState?.description ?? booking.description}
+                      />
+                      <input
+                        className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleEdit(
+                            booking._id,
+                            "startsAt",
+                            event.target.value,
+                          )
+                        }
+                        type="datetime-local"
+                        value={
+                          formState?.startsAt ??
+                          formatDateTimeInput(booking.startsAt)
+                        }
+                      />
+                      <input
+                        className="rounded-2xl border border-slate-200 transition hover:border-slate-300 px-4 py-3 disabled:bg-slate-100"
+                        disabled={!canEdit}
+                        onChange={(event) =>
+                          handleEdit(booking._id, "endsAt", event.target.value)
+                        }
+                        type="datetime-local"
+                        value={
+                          formState?.endsAt ??
+                          formatDateTimeInput(booking.endsAt)
+                        }
+                      />
+                    </div>
+                    {bookingErrors[booking._id] ? (
+                      <p className="mt-4 text-sm text-danger">
+                        {bookingErrors[booking._id]}
+                      </p>
+                    ) : null}
+                    <div className="mt-4 flex flex-wrap gap-3">
                       <button
-                        className="rounded-[10px] px-5 py-2.5 text-sm font-normal text-danger transition hover:bg-rose-50 active:opacity-70"
-                        onClick={() => void handleDelete(booking._id)}
+                        className="rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={!canEdit}
+                        onClick={() => void handleSave(booking._id)}
                         type="button"
                       >
-                        Delete
+                        Save
                       </button>
-                    ) : null}
-                  </div>
-                </article>
+                      {canDeleteResources(user) ? (
+                        <button
+                          className="rounded-[10px] px-5 py-2.5 text-sm font-normal text-danger transition hover:bg-rose-50 active:opacity-70"
+                          onClick={() => void handleDelete(booking._id)}
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      ) : null}
+                    </div>
+                  </article>
+                </li>
               );
-            })
-          ) : (
-            <StatusPanel
-              title="No bookings"
-              message="Add the first scheduling entry for this organization."
-            />
-          )}
-        </div>
+            })}
+          </ul>
+        ) : (
+          <StatusPanel
+            title="No bookings"
+            message="Add the first scheduling entry for this organization."
+          />
+        )}
       </section>
     </div>
   );

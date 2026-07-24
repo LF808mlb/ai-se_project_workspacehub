@@ -43,9 +43,9 @@ export const FeatureFlagsPage = () => {
         title="Feature flags"
       />
       <div className="rounded-[20px] bg-white p-8 shadow-sm">
-        <div className="space-y-4">
+        <ul className="space-y-4">
           {Object.entries(flags).map(([flagKey, enabled]) => (
-            <div
+            <li
               className="flex items-center justify-between rounded-[12px] border border-slate-200 p-[18px]"
               key={flagKey}
             >
@@ -67,9 +67,9 @@ export const FeatureFlagsPage = () => {
                   }))
                 }
               />
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
         {status ? (
           <p className="mt-4 text-sm text-slate-600">{status}</p>
         ) : null}
