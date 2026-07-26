@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        // Header nav collapses into a toggled menu below this width.
+        nav: "1080px",
+      },
       colors: {
         ink: "#0f172a",
         panel: "#f7f8fb",
