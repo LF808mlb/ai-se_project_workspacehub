@@ -4,7 +4,7 @@ import { PageHeader } from "../components/PageHeader";
 import { StatusPanel } from "../components/StatusPanel";
 import { projectService } from "../services/projectService";
 import { taskService } from "../services/taskService";
-import type { ProjectWithTaskCount } from "../types/models";
+import type { ProjectWithTaskCount } from "../types/views";
 import { useAuth } from "../hooks/useAuth";
 import { canDeleteResources } from "../utils/permissions";
 
