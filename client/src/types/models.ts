@@ -40,6 +40,10 @@ export interface Project {
   updatedAt: string;
 }
 
+export interface ProjectWithTaskCount extends Project {
+  taskCount: number;
+}
+
 export type ProjectCreatePayload = Pick<Project, "name" | "description">;
 
 export type ProjectUpdatePayload = Partial<
