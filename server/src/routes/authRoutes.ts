@@ -11,6 +11,6 @@ const router = Router();
 
 router.post("/register", asyncHandler(registerController));
 router.post("/login", asyncHandler(loginController));
-router.get("/me", requireAuth, asyncHandler(meController));
+router.get("/me", asyncHandler(requireAuth), asyncHandler(meController));
 
 export default router;

@@ -15,7 +15,7 @@ export const getCurrentOrganizationController = async (
 };
 
 export const updateCurrentOrganizationController = async (
-  req: Request,
+  req: Request<Record<string, string>, unknown, Record<string, unknown>>,
   res: Response,
 ) => {
   const organization = await updateCurrentOrganization(
@@ -26,7 +26,7 @@ export const updateCurrentOrganizationController = async (
 };
 
 export const updateFeatureFlagsController = async (
-  req: Request,
+  req: Request<Record<string, string>, unknown, Record<string, unknown>>,
   res: Response,
 ) => {
   const organization = await updateOrganizationFeatureFlags(

@@ -1,4 +1,4 @@
-import { Schema, model, type InferSchemaType } from "mongoose";
+import { Schema, model, Types, type InferSchemaType } from "mongoose";
 
 const bookingSchema = new Schema(
   {
@@ -37,7 +37,7 @@ const bookingSchema = new Schema(
 );
 
 export type BookingDocument = InferSchemaType<typeof bookingSchema> & {
-  _id: string;
+  _id: Types.ObjectId;
 };
 
-export const Booking = model("Booking", bookingSchema);
+export const Booking = model<BookingDocument>("Booking", bookingSchema);

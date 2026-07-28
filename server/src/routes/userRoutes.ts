@@ -9,7 +9,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
-router.use(requireAuth);
+router.use(asyncHandler(requireAuth));
 
 router.get("/", asyncHandler(listUsersController));
 router.get("/:id", asyncHandler(getUserController));

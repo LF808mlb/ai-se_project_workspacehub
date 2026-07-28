@@ -1,7 +1,7 @@
 import { User } from "../models/User";
 import type { AuthPayload } from "../types/domain";
 import { AppError } from "../utils/appError";
-import { findByIdInOrganization } from "../utils/scopedQuery";
+import { assertFound } from "../utils/scopedQuery";
 import { parseRole, requireString } from "../utils/validators";
 import { canChangeUserRole, canManageUsers } from "./permissionService";
 
@@ -12,9 +12,9 @@ export const listUsers = async (organizationId: string) => {
 };
 
 export const getUserById = async (organizationId: string, id: string) => {
-  const user = await findByIdInOrganization(User, id, organizationId, "User");
-  const userObject = user.toObject();
-  delete userObject.passwordHash;
+  const found = await User.findOne({ _id: id, organizationId });
+  const user = assertFound(found, "User");
+  const { passwordHash: _passwordHash, ...userObject } = user.toObject();
   return userObject;
 };
 
@@ -23,12 +23,11 @@ export const updateUser = async (
   userId: string,
   payload: Record<string, unknown>,
 ) => {
-  const user = await findByIdInOrganization(
-    User,
-    userId,
-    actor.organizationId,
-    "User",
-  );
+  const found = await User.findOne({
+    _id: userId,
+    organizationId: actor.organizationId,
+  });
+  const user = assertFound(found, "User");
 
   if (!canManageUsers(actor, String(user._id))) {
     throw new AppError("You do not have permission to update this user", 403);
@@ -53,7 +52,6 @@ export const updateUser = async (
   }
 
   await user.save();
-  const userObject = user.toObject();
-  delete userObject.passwordHash;
+  const { passwordHash: _passwordHash, ...userObject } = user.toObject();
   return userObject;
 };

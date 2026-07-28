@@ -1,9 +1,10 @@
+import { Types } from "mongoose";
 import { Project } from "../models/Project";
 import { Task } from "../models/Task";
 import { User } from "../models/User";
 import type { AuthPayload } from "../types/domain";
 import { AppError } from "../utils/appError";
-import { findByIdInOrganization } from "../utils/scopedQuery";
+import { assertFound } from "../utils/scopedQuery";
 import {
   optionalString,
   parseDate,
@@ -92,7 +93,8 @@ export const createTask = async (
 };
 
 export const getTaskById = async (organizationId: string, id: string) => {
-  return findByIdInOrganization(Task, id, organizationId, "Task");
+  const task = await Task.findOne({ _id: id, organizationId });
+  return assertFound(task, "Task");
 };
 
 export const updateTask = async (
@@ -113,7 +115,7 @@ export const updateTask = async (
 
     const projectId = requireString(payload.projectId, "Project ID");
     await ensureProjectInOrganization(projectId, actor.organizationId);
-    task.projectId = projectId;
+    task.projectId = new Types.ObjectId(projectId);
   }
 
   if (payload.title !== undefined) {
@@ -148,7 +150,7 @@ export const updateTask = async (
     } else {
       const assignedTo = requireString(payload.assignedTo, "Assigned user");
       await ensureAssigneeInOrganization(assignedTo, actor.organizationId);
-      task.assignedTo = assignedTo;
+      task.assignedTo = new Types.ObjectId(assignedTo);
     }
   }
 

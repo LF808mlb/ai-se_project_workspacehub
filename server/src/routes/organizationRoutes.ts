@@ -10,7 +10,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
-router.use(requireAuth);
+router.use(asyncHandler(requireAuth));
 
 router.get("/current", asyncHandler(getCurrentOrganizationController));
 router.patch(

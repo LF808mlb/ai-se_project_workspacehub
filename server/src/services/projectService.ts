@@ -1,7 +1,7 @@
 import { Project } from "../models/Project";
 import type { AuthPayload } from "../types/domain";
 import { AppError } from "../utils/appError";
-import { findByIdInOrganization } from "../utils/scopedQuery";
+import { assertFound } from "../utils/scopedQuery";
 import { optionalString, requireString } from "../utils/validators";
 import { canDeleteResource, canManageProject } from "./permissionService";
 
@@ -25,7 +25,8 @@ export const createProject = async (
 };
 
 export const getProjectById = async (organizationId: string, id: string) => {
-  return findByIdInOrganization(Project, id, organizationId, "Project");
+  const project = await Project.findOne({ _id: id, organizationId });
+  return assertFound(project, "Project");
 };
 
 export const updateProject = async (

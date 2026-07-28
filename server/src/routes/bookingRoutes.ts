@@ -12,8 +12,8 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
-router.use(requireAuth);
-router.use(requireFeatureFlag("scheduling"));
+router.use(asyncHandler(requireAuth));
+router.use(asyncHandler(requireFeatureFlag("scheduling")));
 
 router.get("/", asyncHandler(listBookingsController));
 router.post("/", asyncHandler(createBookingController));

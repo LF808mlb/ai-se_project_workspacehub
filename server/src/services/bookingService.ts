@@ -1,7 +1,7 @@
 import { Booking } from "../models/Booking";
 import type { AuthPayload } from "../types/domain";
 import { AppError } from "../utils/appError";
-import { findByIdInOrganization } from "../utils/scopedQuery";
+import { assertFound } from "../utils/scopedQuery";
 import { optionalString, parseDate, requireString } from "../utils/validators";
 import { canDeleteResource, canManageBooking } from "./permissionService";
 
@@ -56,7 +56,8 @@ export const createBooking = async (
 };
 
 export const getBookingById = async (organizationId: string, id: string) => {
-  return findByIdInOrganization(Booking, id, organizationId, "Booking");
+  const booking = await Booking.findOne({ _id: id, organizationId });
+  return assertFound(booking, "Booking");
 };
 
 export const updateBooking = async (

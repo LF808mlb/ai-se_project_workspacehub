@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
 import { Organization } from "../models/Organization";
-import { User } from "../models/User";
+import { User, type UserDocument } from "../models/User";
 import { AppError } from "../utils/appError";
 import {
   requireEmail,
@@ -19,7 +19,7 @@ const signToken = (payload: {
   return jwt.sign(payload, env.jwtSecret, { expiresIn: "7d" });
 };
 
-const sanitizeUser = (user: any) => {
+const sanitizeUser = (user: UserDocument) => {
   return {
     _id: String(user._id),
     firstName: user.firstName,

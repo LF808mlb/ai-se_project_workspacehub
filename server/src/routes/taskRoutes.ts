@@ -11,7 +11,7 @@ import { asyncHandler } from "../utils/asyncHandler";
 
 const router = Router();
 
-router.use(requireAuth);
+router.use(asyncHandler(requireAuth));
 
 router.get("/", asyncHandler(listTasksController));
 router.post("/", asyncHandler(createTaskController));
