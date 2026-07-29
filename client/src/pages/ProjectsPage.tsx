@@ -6,6 +6,7 @@ import { projectService } from "../services/projectService";
 import { taskService } from "../services/taskService";
 import type { ProjectWithTaskCount } from "../types/views";
 import { useAuth } from "../hooks/useAuth";
+import { buildProjectWithTaskCount } from "../utils/projectMetrics";
 import { canDeleteResources } from "../utils/permissions";
 
 export const ProjectsPage = () => {
@@ -26,18 +27,9 @@ export const ProjectsPage = () => {
         taskService.list(),
       ]);
 
-      const taskCountByProjectId = tasks.reduce<Record<string, number>>(
-        (counts, task) => {
-          counts[task.projectId] = (counts[task.projectId] ?? 0) + 1;
-          return counts;
-        },
-        {},
+      const projectsWithTaskCount = nextProjects.map((project) =>
+        buildProjectWithTaskCount(project, tasks),
       );
-
-      const projectsWithTaskCount = nextProjects.map((project) => ({
-        ...project,
-        taskCount: taskCountByProjectId[project._id] ?? 0,
-      }));
 
       setProjects(projectsWithTaskCount);
     } catch (loadError) {
