@@ -39,6 +39,41 @@ export const BookingsPage = () => {
     {},
   );
 
+  const validateBookingFormState = (form: BookingFormState): string | null => {
+    if (!form.title.trim()) {
+      return "Title is required";
+    }
+
+    if (form.title.trim().length < 2) {
+      return "Title must be at least 2 characters";
+    }
+
+    if (!form.startsAt) {
+      return "Start time is required";
+    }
+
+    if (!form.endsAt) {
+      return "End time is required";
+    }
+
+    const startsAt = new Date(form.startsAt);
+    const endsAt = new Date(form.endsAt);
+
+    if (Number.isNaN(startsAt.getTime())) {
+      return "Start time must be a valid date";
+    }
+
+    if (Number.isNaN(endsAt.getTime())) {
+      return "End time must be a valid date";
+    }
+
+    if (startsAt >= endsAt) {
+      return "Booking end time must be after the start time";
+    }
+
+    return null;
+  };
+
   useEffect(() => {
     const loadBookings = async () => {
       if (!isFeatureEnabled("scheduling")) {
@@ -76,6 +111,13 @@ export const BookingsPage = () => {
 
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const validationError = validateBookingFormState(createState);
+
+    if (validationError) {
+      setCreateError(validationError);
+      return;
+    }
 
     try {
       const booking = await bookingService.create(createState);
@@ -119,11 +161,28 @@ export const BookingsPage = () => {
   };
 
   const handleSave = async (bookingId: string) => {
+    const formState = bookingEdits[bookingId];
+
+    if (!formState) {
+      setBookingErrors((current) => ({
+        ...current,
+        [bookingId]: "Unable to update booking",
+      }));
+      return;
+    }
+
+    const validationError = validateBookingFormState(formState);
+
+    if (validationError) {
+      setBookingErrors((current) => ({
+        ...current,
+        [bookingId]: validationError,
+      }));
+      return;
+    }
+
     try {
-      const updatedBooking = await bookingService.update(
-        bookingId,
-        bookingEdits[bookingId],
-      );
+      const updatedBooking = await bookingService.update(bookingId, formState);
       setBookings((current) =>
         current.map((booking) =>
           booking._id === bookingId ? updatedBooking : booking,
