@@ -15,11 +15,15 @@ export const ProjectsPage = () => {
   const [formState, setFormState] = useState({ name: "", description: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionErrorProjectId, setActionErrorProjectId] = useState<
+    string | null
+  >(null);
 
   const loadProjects = async () => {
     setLoading(true);
-    setError(null);
+    setLoadError(null);
 
     try {
       const [nextProjects, tasks] = await Promise.all([
@@ -33,7 +37,7 @@ export const ProjectsPage = () => {
 
       setProjects(projectsWithTaskCount);
     } catch (loadError) {
-      setError(
+      setLoadError(
         loadError instanceof Error
           ? loadError.message
           : "Unable to load projects",
@@ -50,14 +54,15 @@ export const ProjectsPage = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSaving(true);
-    setError(null);
+    setActionError(null);
+    setActionErrorProjectId(null);
 
     try {
       const project = await projectService.create(formState);
       setProjects((current) => [{ ...project, taskCount: 0 }, ...current]);
       setFormState({ name: "", description: "" });
     } catch (submitError) {
-      setError(
+      setActionError(
         submitError instanceof Error
           ? submitError.message
           : "Unable to create project",
@@ -69,16 +74,19 @@ export const ProjectsPage = () => {
 
   const handleDelete = async (projectId: string) => {
     try {
+      setActionError(null);
+      setActionErrorProjectId(null);
       await projectService.delete(projectId);
       setProjects((current) =>
         current.filter((project) => project._id !== projectId),
       );
     } catch (deleteError) {
-      setError(
+      setActionError(
         deleteError instanceof Error
           ? deleteError.message
           : "Unable to delete project",
       );
+      setActionErrorProjectId(projectId);
     }
   };
 
@@ -86,6 +94,10 @@ export const ProjectsPage = () => {
     return (
       <StatusPanel title="Loading projects" message="Fetching project list." />
     );
+  }
+
+  if (loadError) {
+    return <StatusPanel title="Projects unavailable" message={loadError} />;
   }
 
   return (
@@ -123,7 +135,9 @@ export const ProjectsPage = () => {
               placeholder="Description"
               value={formState.description}
             />
-            {error ? <p className="text-sm text-danger">{error}</p> : null}
+            {actionError && !actionErrorProjectId ? (
+              <p className="text-sm text-danger">{actionError}</p>
+            ) : null}
             <button
               className="rounded-[12px] bg-ink px-4 py-3 font-medium text-white transition hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={saving}
@@ -158,13 +172,18 @@ export const ProjectsPage = () => {
                         View details
                       </Link>
                       {canDeleteResources(user) ? (
-                        <button
-                          className="rounded-[10px] px-4 py-2 text-sm font-normal text-danger transition hover:bg-rose-50 active:opacity-70"
-                          onClick={() => void handleDelete(project._id)}
-                          type="button"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex flex-col items-end gap-2">
+                          <button
+                            className="rounded-[10px] px-4 py-2 text-sm font-normal text-danger transition hover:bg-rose-50 active:opacity-70"
+                            onClick={() => void handleDelete(project._id)}
+                            type="button"
+                          >
+                            Delete
+                          </button>
+                          {actionError && actionErrorProjectId === project._id ? (
+                            <p className="text-sm text-danger">{actionError}</p>
+                          ) : null}
+                        </div>
                       ) : null}
                     </div>
                   </div>
