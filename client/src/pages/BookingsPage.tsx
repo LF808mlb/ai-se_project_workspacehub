@@ -416,7 +416,8 @@ export const BookingsPage = () => {
               const formState = bookingEdits[booking._id];
               const rowState = formState ?? buildBookingFormState(booking);
               const rowErrors = validateBookingFormState(rowState);
-              const rowTouched = editTouched[booking._id] ?? createUntouchedState();
+              const rowTouched =
+                editTouched[booking._id] ?? createUntouchedState();
 
               return (
                 <li key={booking._id}>
@@ -433,7 +434,9 @@ export const BookingsPage = () => {
                           value={rowState.title}
                         />
                         {rowTouched.title && rowErrors.title ? (
-                          <p className="text-sm text-danger">{rowErrors.title}</p>
+                          <p className="text-sm text-danger">
+                            {rowErrors.title}
+                          </p>
                         ) : null}
                       </div>
                       <div className="space-y-2 md:col-span-2">
@@ -485,7 +488,11 @@ export const BookingsPage = () => {
                           disabled={!canEdit}
                           onBlur={() => handleEditBlur(booking._id, "endsAt")}
                           onChange={(event) =>
-                            handleEdit(booking._id, "endsAt", event.target.value)
+                            handleEdit(
+                              booking._id,
+                              "endsAt",
+                              event.target.value,
+                            )
                           }
                           type="datetime-local"
                           value={rowState.endsAt}

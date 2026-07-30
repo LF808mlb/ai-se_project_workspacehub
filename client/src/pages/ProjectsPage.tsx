@@ -169,7 +169,8 @@ export const ProjectsPage = () => {
                         {project.description}
                       </p>
                       <p className="mt-2 text-sm text-slate-500">
-                        {project.taskCount} {project.taskCount === 1 ? "task" : "tasks"}
+                        {project.taskCount}{" "}
+                        {project.taskCount === 1 ? "task" : "tasks"}
                       </p>
                     </div>
                     <div className="flex gap-2">
@@ -188,7 +189,8 @@ export const ProjectsPage = () => {
                           >
                             Delete
                           </button>
-                          {actionError && actionErrorProjectId === project._id ? (
+                          {actionError &&
+                          actionErrorProjectId === project._id ? (
                             <p className="text-sm text-danger">{actionError}</p>
                           ) : null}
                         </div>
