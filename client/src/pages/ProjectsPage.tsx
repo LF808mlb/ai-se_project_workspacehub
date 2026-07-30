@@ -111,7 +111,7 @@ export const ProjectsPage = () => {
         {canCreate ? (
           <form
             className="rounded-3xl bg-white p-6 shadow-sm"
-            onSubmit={handleSubmit}
+            onSubmit={(event) => void handleSubmit(event)}
           >
             <h2 className="text-xl font-semibold text-ink">Create project</h2>
             <div className="mt-4 space-y-4">

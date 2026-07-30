@@ -207,7 +207,7 @@ export const TasksPage = () => {
       <section className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <form
           className="rounded-3xl bg-white p-6 shadow-sm"
-          onSubmit={handleCreate}
+          onSubmit={(event) => void handleCreate(event)}
         >
           <h2 className="text-xl font-semibold text-ink">Create task</h2>
           <div className="mt-4 space-y-4">
