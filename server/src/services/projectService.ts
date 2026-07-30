@@ -4,7 +4,6 @@ import { AppError } from "../utils/appError";
 import { assertFound } from "../utils/scopedQuery";
 import {
   optionalString,
-  requireString,
   requireStringLength,
 } from "../utils/validators";
 import { canDeleteResource, canManageProject } from "./permissionService";

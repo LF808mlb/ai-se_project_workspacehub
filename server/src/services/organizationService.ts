@@ -4,7 +4,6 @@ import { AppError } from "../utils/appError";
 import {
   parseBoolean,
   requireSlug,
-  requireString,
   requireStringLength,
 } from "../utils/validators";
 

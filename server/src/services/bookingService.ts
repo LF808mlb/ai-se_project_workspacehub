@@ -5,7 +5,6 @@ import { assertFound } from "../utils/scopedQuery";
 import {
   optionalString,
   parseDate,
-  requireString,
   requireStringLength,
 } from "../utils/validators";
 import { canDeleteResource, canManageBooking } from "./permissionService";
