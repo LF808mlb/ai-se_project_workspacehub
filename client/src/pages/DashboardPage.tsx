@@ -9,7 +9,7 @@ import { taskService } from "../services/taskService";
 import { userService } from "../services/userService";
 import { useAuth } from "../hooks/useAuth";
 import type { Booking, Project, Task, User } from "../types/models";
-import { formatDateInput, formatDateTime } from "../utils/date";
+import { formatDateTime } from "../utils/date";
 
 interface DashboardData {
   projects: Project[];
