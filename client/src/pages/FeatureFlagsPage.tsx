@@ -44,7 +44,7 @@ export const FeatureFlagsPage = () => {
       />
       <div className="rounded-[20px] bg-white p-8 shadow-sm">
         <ul className="space-y-4">
-          {Object.entries(flags).map(([flagKey, enabled]) => (
+          {Object.entries(flags).map(([flagKey, enabled]: [string, boolean]) => (
             <li
               className="flex items-center justify-between rounded-[12px] border border-slate-200 p-[18px]"
               key={flagKey}
