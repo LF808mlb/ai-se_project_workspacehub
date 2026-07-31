@@ -5,10 +5,7 @@ import type {
   User,
   UserRole,
 } from "../types/models";
-import type {
-  LoginPayload,
-  RegisterPayload,
-} from "../services/authService";
+import type { LoginPayload, RegisterPayload } from "../services/authService";
 
 export interface AuthContextValue {
   token: string | null;

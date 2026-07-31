@@ -1,9 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { useEffect, useMemo, useState, type PropsWithChildren } from "react";
 import {
   authService,
   type LoginPayload,
@@ -11,7 +6,12 @@ import {
 } from "../services/authService";
 import { setAuthToken } from "../services/api";
 import { AuthContext, type AuthContextValue } from "./auth-context";
-import type { FeatureFlags, Organization, User, UserRole } from "../types/models";
+import type {
+  FeatureFlags,
+  Organization,
+  User,
+  UserRole,
+} from "../types/models";
 
 const STORAGE_KEY = "workspacehub_token";
 

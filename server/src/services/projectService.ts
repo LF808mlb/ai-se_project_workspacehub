@@ -2,10 +2,7 @@ import { Project } from "../models/Project";
 import type { AuthPayload } from "../types/domain";
 import { AppError } from "../utils/appError";
 import { assertFound } from "../utils/scopedQuery";
-import {
-  optionalString,
-  requireStringLength,
-} from "../utils/validators";
+import { optionalString, requireStringLength } from "../utils/validators";
 import { canDeleteResource, canManageProject } from "./permissionService";
 
 export const listProjects = async (organizationId: string) => {
