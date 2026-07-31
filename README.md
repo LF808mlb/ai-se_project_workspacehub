@@ -96,3 +96,7 @@ The seed script creates one organization with these users:
 - The booking overlap rule is isolated in the booking service.
 - Feature-flag checks are isolated in a reusable middleware/service path.
 - Permission logic is centralized in auth and permission helpers.
+
+## Adding text
+
+- adding text so my file is slightly different in order to create new branch workspacehub-part-1
