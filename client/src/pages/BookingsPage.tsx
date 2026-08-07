@@ -110,6 +110,7 @@ export const BookingsPage = () => {
 
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setCreateError(null);
 
     const validationErrors = validateBookingFormState(createState);
 
@@ -119,7 +120,6 @@ export const BookingsPage = () => {
     }
 
     try {
-      setCreateError(null);
       const booking = await bookingService.create(createState);
       setBookings((current) =>
         [...current, booking].sort((left, right) =>
@@ -179,6 +179,7 @@ export const BookingsPage = () => {
 
   const handleSave = async (bookingId: string) => {
     const formState = bookingEdits[bookingId];
+    setBookingErrors((current) => ({ ...current, [bookingId]: "" }));
 
     if (!formState) {
       setBookingErrors((current) => ({
@@ -199,7 +200,6 @@ export const BookingsPage = () => {
     }
 
     try {
-      setBookingErrors((current) => ({ ...current, [bookingId]: "" }));
       const updatedBooking = await bookingService.update(bookingId, formState);
       setBookings((current) =>
         current.map((booking) =>
