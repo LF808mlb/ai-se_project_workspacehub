@@ -76,3 +76,9 @@ For mock/test data:
 - Use valid constrained values (like specific status strings).
 - Relationship fields (like `projectId`) must point to the right kind of record.
 - Date fields must use the serialized string format expected by the frontend.
+
+## Rules for Existing Routes and Controllers
+
+1. Authentication: All routes must be protected by the requireAuth middleware.
+2. Error Handling: All controller functions must be wrapped in asyncHandler() to automatically catch Promise rejections.
+3. Response Formatting: Controllers must use the sendSuccess(res, data) utility instead of calling res.json() directly.
