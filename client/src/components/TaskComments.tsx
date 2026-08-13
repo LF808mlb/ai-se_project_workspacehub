@@ -122,7 +122,7 @@ export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
     <>
       {isExpanded ? (
         <button
-          className="ml-auto rounded-[10px] border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 active:opacity-70"
+          className="ml-auto rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70"
           onClick={() => setIsExpanded(false)}
           type="button"
         >
@@ -130,7 +130,7 @@ export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
         </button>
       ) : (
         <button
-          className="ml-auto rounded-[10px] border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 active:opacity-70"
+          className="ml-auto rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70"
           onClick={() => setIsExpanded(true)}
           type="button"
         >
