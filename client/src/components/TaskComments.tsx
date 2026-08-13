@@ -1,51 +1,14 @@
 import { useState, type FormEvent } from "react";
+import { commentService } from "../services/commentService";
 import type { Comment, User } from "../types/models";
 
 interface TaskCommentsProps {
   taskId: string;
   commentCount: number;
   users: User[];
+  onCommentCreated?: () => void;
 }
 
-/**
- * Builds local mock comments for UI preview before wiring API calls.
- *
- * @example
- * const comments = buildMockComments("task-123");
- */
-const buildMockComments = (taskId: string): Comment[] => {
-  if (!taskId.trim()) {
-    return [];
-  }
-
-  return [
-    {
-      _id: `mock-comment-1-${taskId}`,
-      organizationId: "mock-organization-id",
-      taskId,
-      authorId: "mock-user-a",
-      content: "Captured the first QA notes for this task.",
-      createdAt: "2026-08-12T09:45:00.000Z",
-      updatedAt: "2026-08-12T09:45:00.000Z",
-    },
-    {
-      _id: `mock-comment-2-${taskId}`,
-      organizationId: "mock-organization-id",
-      taskId,
-      authorId: "mock-user-b",
-      content: "Blocked on design copy. Following up with product.",
-      createdAt: "2026-08-11T17:05:00.000Z",
-      updatedAt: "2026-08-11T17:05:00.000Z",
-    },
-  ];
-};
-
-/**
- * Resolves a display name for a comment author.
- *
- * @example
- * const displayName = resolveAuthorName(comment.authorId, users);
- */
 const resolveAuthorName = (authorId: string, users: User[]): string => {
   if (!authorId.trim() || users.length === 0) {
     return "Unknown user";
@@ -60,67 +23,82 @@ const resolveAuthorName = (authorId: string, users: User[]): string => {
   return `${matchingUser.firstName} ${matchingUser.lastName}`;
 };
 
-/**
- * Creates a local comment object for instant UI updates.
- *
- * @example
- * const draft = buildLocalComment({ taskId: "task-123", content: "Looks good", users });
- */
-const buildLocalComment = ({
-  taskId,
-  content,
-  users,
-}: {
-  taskId: string;
-  content: string;
-  users: User[];
-}): Comment | null => {
-  const trimmedContent = content.trim();
-
-  if (!taskId.trim() || !trimmedContent) {
-    return null;
-  }
-
-  const nowIso = new Date().toISOString();
-  const fallbackAuthorId = users[0]?._id ?? "deleted-user";
-
-  return {
-    _id: `local-comment-${nowIso}`,
-    organizationId: users[0]?.organizationId ?? "mock-organization-id",
-    taskId,
-    authorId: fallbackAuthorId,
-    content: trimmedContent,
-    createdAt: nowIso,
-    updatedAt: nowIso,
-  };
-};
-
 export const TaskComments = ({
   taskId,
   commentCount,
   users,
+  onCommentCreated,
 }: TaskCommentsProps) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [comments, setComments] = useState<Comment[]>(() =>
-    buildMockComments(taskId),
-  );
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newCommentText, setNewCommentText] = useState("");
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [hasLoadedComments, setHasLoadedComments] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const localComment = buildLocalComment({
-      taskId,
-      content: newCommentText,
-      users,
-    });
-
-    if (!localComment) {
+  const loadComments = async () => {
+    if (hasLoadedComments) {
       return;
     }
 
-    setComments((currentComments) => [localComment, ...currentComments]);
-    setNewCommentText("");
+    setLoadingComments(true);
+    setCommentsError(null);
+
+    try {
+      const nextComments = await commentService.list(taskId);
+      setComments(nextComments);
+      setHasLoadedComments(true);
+    } catch (loadError) {
+      setCommentsError(
+        loadError instanceof Error
+          ? loadError.message
+          : "Unable to load comments.",
+      );
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  const handleToggleExpand = async () => {
+    if (isExpanded) {
+      setIsExpanded(false);
+      return;
+    }
+
+    setIsExpanded(true);
+
+    if (!hasLoadedComments) {
+      await loadComments();
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedContent = newCommentText.trim();
+
+    if (!trimmedContent) {
+      return;
+    }
+
+    setCreateError(null);
+
+    try {
+      const createdComment = await commentService.create(taskId, {
+        content: trimmedContent,
+      });
+
+      setComments((currentComments) => [createdComment, ...currentComments]);
+      setNewCommentText("");
+      onCommentCreated?.();
+    } catch (submitError) {
+      setCreateError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to add comment.",
+      );
+    }
   };
 
   return (
@@ -136,7 +114,7 @@ export const TaskComments = ({
       ) : (
         <button
           className="ml-auto rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70"
-          onClick={() => setIsExpanded(true)}
+          onClick={() => void handleToggleExpand()}
           type="button"
         >
           {`Show Comments (${commentCount})`}
@@ -162,6 +140,9 @@ export const TaskComments = ({
               placeholder="Write a comment"
               value={newCommentText}
             />
+            {createError ? (
+              <p className="text-sm text-danger">{createError}</p>
+            ) : null}
             <button
               className="rounded-[10px] bg-ink px-4 py-2 text-sm font-medium text-white transition hover:opacity-80 active:opacity-70"
               type="submit"
@@ -170,19 +151,35 @@ export const TaskComments = ({
             </button>
           </form>
 
-          <ul className="space-y-3">
-            {comments.map((comment) => (
-              <li
-                className="rounded-2xl border border-slate-200 p-3"
-                key={comment._id}
-              >
-                <p className="text-sm font-medium text-slate-700">
-                  {resolveAuthorName(comment.authorId, users)}
-                </p>
-                <p className="mt-1 text-sm text-slate-600">{comment.content}</p>
-              </li>
-            ))}
-          </ul>
+          {loadingComments ? (
+            <p className="text-sm text-slate-500">Loading comments...</p>
+          ) : null}
+
+          {commentsError ? (
+            <p className="text-sm text-danger">{commentsError}</p>
+          ) : null}
+
+          {!loadingComments && comments.length === 0 && !commentsError ? (
+            <p className="text-sm text-slate-500">No comments yet.</p>
+          ) : null}
+
+          {!loadingComments && comments.length > 0 ? (
+            <ul className="space-y-3">
+              {comments.map((comment) => (
+                <li
+                  className="rounded-2xl border border-slate-200 p-3"
+                  key={comment._id}
+                >
+                  <p className="text-sm font-medium text-slate-700">
+                    {resolveAuthorName(comment.authorId, users)}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {comment.content}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </section>
       ) : null}
     </>

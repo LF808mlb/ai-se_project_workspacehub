@@ -477,6 +477,18 @@ export const TasksPage = () => {
                         taskId={task._id}
                         commentCount={task.commentCount}
                         users={users}
+                        onCommentCreated={() =>
+                          setTasks((current) =>
+                            current.map((currentTask) =>
+                              currentTask._id === task._id
+                                ? {
+                                    ...currentTask,
+                                    commentCount: currentTask.commentCount + 1,
+                                  }
+                                : currentTask,
+                            ),
+                          )
+                        }
                       />
                     </div>
                   </article>
