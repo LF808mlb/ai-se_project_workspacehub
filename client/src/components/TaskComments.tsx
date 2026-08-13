@@ -96,7 +96,9 @@ const buildLocalComment = ({
 
 export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [comments, setComments] = useState<Comment[]>(() => buildMockComments(taskId));
+  const [comments, setComments] = useState<Comment[]>(() =>
+    buildMockComments(taskId),
+  );
   const [newCommentText, setNewCommentText] = useState("");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -138,8 +140,14 @@ export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
 
       {isExpanded ? (
         <section className="mt-4 basis-full space-y-4 rounded-2xl border border-slate-200 p-4">
-          <form className="space-y-3" onSubmit={(event) => void handleSubmit(event)}>
-            <label className="text-sm font-medium text-slate-700" htmlFor={`comment-input-${taskId}`}>
+          <form
+            className="space-y-3"
+            onSubmit={(event) => void handleSubmit(event)}
+          >
+            <label
+              className="text-sm font-medium text-slate-700"
+              htmlFor={`comment-input-${taskId}`}
+            >
               Add comment
             </label>
             <textarea
@@ -159,7 +167,10 @@ export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
 
           <ul className="space-y-3">
             {comments.map((comment) => (
-              <li className="rounded-2xl border border-slate-200 p-3" key={comment._id}>
+              <li
+                className="rounded-2xl border border-slate-200 p-3"
+                key={comment._id}
+              >
                 <p className="text-sm font-medium text-slate-700">
                   {resolveAuthorName(comment.authorId, users)}
                 </p>

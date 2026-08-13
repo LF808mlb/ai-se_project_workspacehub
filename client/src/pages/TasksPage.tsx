@@ -61,40 +61,42 @@ export const TasksPage = () => {
   const [createError, setCreateError] = useState<string | null>(null);
   const [taskErrors, setTaskErrors] = useState<Record<string, string>>({});
 
-  const loadData = async () => {
-    setLoading(true);
-    setCreateError(null);
-
-    try {
-      const [nextProjects, nextUsers, nextTasks] = await Promise.all([
-        projectService.list(),
-        userService.list(),
-        taskService.list(),
-      ]);
-
-      setProjects(nextProjects);
-      setUsers(nextUsers);
-      setTasks(nextTasks);
-      setTaskEdits(
-        Object.fromEntries(
-          nextTasks.map((task) => [task._id, buildTaskFormState(task)]),
-        ),
-      );
-      setCreateState((current) => ({
-        ...current,
-        projectId: nextProjects[0]?._id ?? "",
-        assignedTo: user?._id ?? "",
-      }));
-    } catch (loadError) {
-      setCreateError(
-        loadError instanceof Error ? loadError.message : "Unable to load tasks",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      setCreateError(null);
+
+      try {
+        const [nextProjects, nextUsers, nextTasks] = await Promise.all([
+          projectService.list(),
+          userService.list(),
+          taskService.list(),
+        ]);
+
+        setProjects(nextProjects);
+        setUsers(nextUsers);
+        setTasks(nextTasks);
+        setTaskEdits(
+          Object.fromEntries(
+            nextTasks.map((task) => [task._id, buildTaskFormState(task)]),
+          ),
+        );
+        setCreateState((current) => ({
+          ...current,
+          projectId: nextProjects[0]?._id ?? "",
+          assignedTo: user?._id ?? "",
+        }));
+      } catch (loadError) {
+        setCreateError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Unable to load tasks",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     void loadData();
   }, [user?._id]);
 
