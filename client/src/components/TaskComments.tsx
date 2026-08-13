@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
+import { useAuth } from "../hooks/useAuth";
 import { commentService } from "../services/commentService";
+import { canManageComment } from "../utils/permissions";
 import type { Comment, User } from "../types/models";
 
 interface TaskCommentsProps {
@@ -29,6 +31,7 @@ export const TaskComments = ({
   users,
   onCommentCreated,
 }: TaskCommentsProps) => {
+  const { user } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newCommentText, setNewCommentText] = useState("");
@@ -36,6 +39,8 @@ export const TaskComments = ({
   const [commentsError, setCommentsError] = useState<string | null>(null);
   const [createError, setCreateError] = useState<string | null>(null);
   const [hasLoadedComments, setHasLoadedComments] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState("");
 
   const loadComments = async () => {
     if (hasLoadedComments) {
@@ -97,6 +102,53 @@ export const TaskComments = ({
         submitError instanceof Error
           ? submitError.message
           : "Unable to add comment.",
+      );
+    }
+  };
+
+  const handleSaveEdit = async (commentId: string) => {
+    const trimmedContent = editingContent.trim();
+
+    if (!trimmedContent) {
+      return;
+    }
+
+    try {
+      const updatedComment = await commentService.update(taskId, commentId, {
+        content: trimmedContent,
+      });
+
+      setComments((currentComments) =>
+        currentComments.map((comment) =>
+          comment._id === commentId ? updatedComment : comment,
+        ),
+      );
+      setEditingCommentId(null);
+      setEditingContent("");
+    } catch (updateError) {
+      setCreateError(
+        updateError instanceof Error
+          ? updateError.message
+          : "Unable to update comment.",
+      );
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await commentService.delete(taskId, commentId);
+      setComments((currentComments) =>
+        currentComments.filter((comment) => comment._id !== commentId),
+      );
+      if (editingCommentId === commentId) {
+        setEditingCommentId(null);
+        setEditingContent("");
+      }
+    } catch (deleteError) {
+      setCreateError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Unable to delete comment.",
       );
     }
   };
@@ -165,19 +217,81 @@ export const TaskComments = ({
 
           {!loadingComments && comments.length > 0 ? (
             <ul className="space-y-3">
-              {comments.map((comment) => (
-                <li
-                  className="rounded-2xl border border-slate-200 p-3"
-                  key={comment._id}
-                >
-                  <p className="text-sm font-medium text-slate-700">
-                    {resolveAuthorName(comment.authorId, users)}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-600">
-                    {comment.content}
-                  </p>
-                </li>
-              ))}
+              {comments.map((comment) => {
+                const canManage = canManageComment(user, comment);
+                const isEditing = editingCommentId === comment._id;
+
+                return (
+                  <li
+                    className="rounded-2xl border border-slate-200 p-3"
+                    key={comment._id}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-medium text-slate-700">
+                        {resolveAuthorName(comment.authorId, users)}
+                      </p>
+                      {canManage ? (
+                        <div className="flex min-w-0 flex-col items-center justify-center gap-2 text-xs">
+                          <button
+                            className="rounded-[10px] bg-ink px-3 py-1.5 font-medium text-white transition hover:opacity-80"
+                            onClick={() => {
+                              setEditingCommentId(comment._id);
+                              setEditingContent(comment.content);
+                            }}
+                            type="button"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="bg-transparent px-0 py-0 font-medium text-red-600 transition hover:opacity-80"
+                            onClick={() =>
+                              void handleDeleteComment(comment._id)
+                            }
+                            type="button"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {isEditing ? (
+                      <div className="mt-2 space-y-2">
+                        <textarea
+                          className="min-h-20 w-full rounded-2xl border border-slate-200 px-3 py-2 text-sm transition hover:border-slate-300"
+                          onChange={(event) =>
+                            setEditingContent(event.target.value)
+                          }
+                          value={editingContent}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            className="rounded-[10px] bg-ink px-3 py-1.5 text-xs font-medium text-white transition hover:opacity-80"
+                            onClick={() => void handleSaveEdit(comment._id)}
+                            type="button"
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="px-3 py-1.5 text-xs text-slate-500 transition hover:text-slate-700"
+                            onClick={() => {
+                              setEditingCommentId(null);
+                              setEditingContent("");
+                            }}
+                            type="button"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="mt-1 text-sm text-slate-600">
+                        {comment.content}
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           ) : null}
         </section>
