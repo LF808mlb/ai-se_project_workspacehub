@@ -3,6 +3,7 @@ import type { Comment, User } from "../types/models";
 
 interface TaskCommentsProps {
   taskId: string;
+  commentCount: number;
   users: User[];
 }
 
@@ -94,7 +95,11 @@ const buildLocalComment = ({
   };
 };
 
-export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
+export const TaskComments = ({
+  taskId,
+  commentCount,
+  users,
+}: TaskCommentsProps) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [comments, setComments] = useState<Comment[]>(() =>
     buildMockComments(taskId),
@@ -134,7 +139,7 @@ export const TaskComments = ({ taskId, users }: TaskCommentsProps) => {
           onClick={() => setIsExpanded(true)}
           type="button"
         >
-          {`Show Comments (${comments.length})`}
+          {`Show Comments (${commentCount})`}
         </button>
       )}
 

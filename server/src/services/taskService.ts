@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { Comment } from "../models/Comment";
 import { Project } from "../models/Project";
 import { Task } from "../models/Task";
 import { User } from "../models/User";
@@ -43,7 +44,40 @@ const ensureAssigneeInOrganization = async (
 
 export const listTasks = async (organizationId: string, projectId?: string) => {
   const query = projectId ? { organizationId, projectId } : { organizationId };
-  return Task.find(query).sort({ createdAt: -1 });
+  const tasks = await Task.find(query).sort({ createdAt: -1 });
+
+  if (!tasks.length) {
+    return [];
+  }
+
+  const taskIds = tasks.map((task) => task._id);
+  const comments = await Comment.find(
+    {
+      organizationId,
+      taskId: { $in: taskIds },
+    },
+    {
+      taskId: 1,
+    },
+  );
+
+  const commentCountByTaskId = comments.reduce<Record<string, number>>(
+    (counts, comment) => {
+      const commentTaskId = String(comment.taskId);
+      counts[commentTaskId] = (counts[commentTaskId] ?? 0) + 1;
+      return counts;
+    },
+    {},
+  );
+
+  return tasks.map((task) => {
+    const taskObject = task.toObject();
+
+    return {
+      ...taskObject,
+      commentCount: commentCountByTaskId[String(task._id)] ?? 0,
+    };
+  });
 };
 
 export const createTask = async (
