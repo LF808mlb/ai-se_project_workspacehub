@@ -2,13 +2,13 @@
   "info": {
     "_postman_id": "9d7d0e11-13ad-4ae9-9b9f-4d80fc2f3d65",
     "name": "WorkspaceHub Comment Permissions",
-    "description": "Verifies that comment authors, organization admins, and organization owners may edit and delete comments, while other members are denied.",
+    "description": "Logs in the seeded owner, admin, and member users; finds the seeded admin-authored comment on the seeded task; verifies comment edit permissions directly on that seeded comment; and verifies delete permissions using fresh admin-authored comments on the same seeded task because a single comment can only be deleted once.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:5000"
+      "value": "http://localhost:5001"
     },
     {
       "key": "password",
