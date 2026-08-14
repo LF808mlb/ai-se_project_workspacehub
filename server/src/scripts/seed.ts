@@ -170,6 +170,25 @@ const seed = async () => {
 
   await User.deleteOne({ _id: departingUser._id });
 
+  const deletedTask = await Task.create({
+    organizationId: organization._id,
+    projectId: projectOne._id,
+    title: "Task removed after comment",
+    description: "Create a comment before deleting this task directly.",
+    status: "todo",
+    priority: "low",
+    assignedTo: admin._id,
+  });
+
+  await Comment.create({
+    organizationId: organization._id,
+    taskId: deletedTask._id,
+    authorId: admin._id,
+    content: "This comment remains after the task is deleted.",
+  });
+
+  await Task.deleteOne({ _id: deletedTask._id });
+
   await Booking.create([
     {
       organizationId: organization._id,
