@@ -17,7 +17,10 @@ export const commentService = {
     unwrapResponse<Comment>(
       api.patch(`/tasks/${taskId}/comments/${commentId}`, payload),
     ),
-  delete: async (taskId: string, commentId: string): Promise<{ deleted: boolean }> =>
+  delete: async (
+    taskId: string,
+    commentId: string,
+  ): Promise<{ deleted: boolean }> =>
     unwrapResponse<{ deleted: boolean }>(
       api.delete(`/tasks/${taskId}/comments/${commentId}`),
     ),

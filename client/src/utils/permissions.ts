@@ -11,7 +11,10 @@ export const isPrivilegedRole = (role?: UserRole | null): boolean => {
   return role === "owner" || role === "admin";
 };
 
-export const canEditProject = (user: User | null, project: Project): boolean => {
+export const canEditProject = (
+  user: User | null,
+  project: Project,
+): boolean => {
   if (!user) {
     return false;
   }
@@ -27,7 +30,10 @@ export const canEditTask = (user: User | null, task: Task): boolean => {
   return isPrivilegedRole(user.role) || user._id === task.assignedTo;
 };
 
-export const canEditBooking = (user: User | null, booking: Booking): boolean => {
+export const canEditBooking = (
+  user: User | null,
+  booking: Booking,
+): boolean => {
   if (!user) {
     return false;
   }
@@ -35,7 +41,10 @@ export const canEditBooking = (user: User | null, booking: Booking): boolean => 
   return isPrivilegedRole(user.role) || user._id === booking.createdBy;
 };
 
-export const canManageComment = (user: User | null, comment: Comment): boolean => {
+export const canManageComment = (
+  user: User | null,
+  comment: Comment,
+): boolean => {
   if (!user) {
     return false;
   }
