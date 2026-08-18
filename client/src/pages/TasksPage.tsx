@@ -1,11 +1,17 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "../components/PageHeader";
 import { StatusPanel } from "../components/StatusPanel";
+import { TaskComments } from "../components/TaskComments";
 import { useAuth } from "../hooks/useAuth";
 import { projectService } from "../services/projectService";
 import { taskService } from "../services/taskService";
 import { userService } from "../services/userService";
-import type { Project, Task, User } from "../types/models";
+import type {
+  Project,
+  Task,
+  TaskWithCommentCount,
+  User,
+} from "../types/models";
 import { formatDateInput } from "../utils/date";
 import {
   canDeleteResources,
@@ -33,6 +39,14 @@ const buildTaskFormState = (task: Task): TaskFormState => ({
   dueDate: formatDateInput(task.dueDate),
 });
 
+const withCommentCount = (
+  task: Task,
+  commentCount = 0,
+): TaskWithCommentCount => ({
+  ...task,
+  commentCount,
+});
+
 const selectClassName =
   "appearance-none rounded-2xl border border-slate-200 bg-no-repeat bg-[length:14px] bg-[right_1.25rem_center] py-3 pl-4 pr-10 transition hover:border-slate-300";
 
@@ -45,7 +59,7 @@ export const TasksPage = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskWithCommentCount[]>([]);
   const [taskEdits, setTaskEdits] = useState<Record<string, TaskFormState>>({});
   const [createState, setCreateState] = useState<TaskFormState>({
     projectId: "",
@@ -60,40 +74,42 @@ export const TasksPage = () => {
   const [createError, setCreateError] = useState<string | null>(null);
   const [taskErrors, setTaskErrors] = useState<Record<string, string>>({});
 
-  const loadData = async () => {
-    setLoading(true);
-    setCreateError(null);
-
-    try {
-      const [nextProjects, nextUsers, nextTasks] = await Promise.all([
-        projectService.list(),
-        userService.list(),
-        taskService.list(),
-      ]);
-
-      setProjects(nextProjects);
-      setUsers(nextUsers);
-      setTasks(nextTasks);
-      setTaskEdits(
-        Object.fromEntries(
-          nextTasks.map((task) => [task._id, buildTaskFormState(task)]),
-        ),
-      );
-      setCreateState((current) => ({
-        ...current,
-        projectId: nextProjects[0]?._id ?? "",
-        assignedTo: user?._id ?? "",
-      }));
-    } catch (loadError) {
-      setCreateError(
-        loadError instanceof Error ? loadError.message : "Unable to load tasks",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      setCreateError(null);
+
+      try {
+        const [nextProjects, nextUsers, nextTasks] = await Promise.all([
+          projectService.list(),
+          userService.list(),
+          taskService.list(),
+        ]);
+
+        setProjects(nextProjects);
+        setUsers(nextUsers);
+        setTasks(nextTasks);
+        setTaskEdits(
+          Object.fromEntries(
+            nextTasks.map((task) => [task._id, buildTaskFormState(task)]),
+          ),
+        );
+        setCreateState((current) => ({
+          ...current,
+          projectId: nextProjects[0]?._id ?? "",
+          assignedTo: user?._id ?? "",
+        }));
+      } catch (loadError) {
+        setCreateError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Unable to load tasks",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     void loadData();
   }, [user?._id]);
 
@@ -108,10 +124,12 @@ export const TasksPage = () => {
         dueDate: createState.dueDate || null,
       });
 
-      setTasks((current) => [createdTask, ...current]);
+      const createdTaskWithCommentCount = withCommentCount(createdTask);
+
+      setTasks((current) => [createdTaskWithCommentCount, ...current]);
       setTaskEdits((current) => ({
         ...current,
-        [createdTask._id]: buildTaskFormState(createdTask),
+        [createdTask._id]: buildTaskFormState(createdTaskWithCommentCount),
       }));
       setCreateState({
         projectId: projects[0]?._id ?? "",
@@ -156,7 +174,11 @@ export const TasksPage = () => {
       });
 
       setTasks((current) =>
-        current.map((task) => (task._id === taskId ? updatedTask : task)),
+        current.map((task) =>
+          task._id === taskId
+            ? withCommentCount(updatedTask, task.commentCount)
+            : task,
+        ),
       );
       setTaskEdits((current) => ({
         ...current,
@@ -451,6 +473,23 @@ export const TasksPage = () => {
                           Delete
                         </button>
                       ) : null}
+                      <TaskComments
+                        taskId={task._id}
+                        commentCount={task.commentCount}
+                        users={users}
+                        onCommentCreated={() =>
+                          setTasks((current) =>
+                            current.map((currentTask) =>
+                              currentTask._id === task._id
+                                ? {
+                                    ...currentTask,
+                                    commentCount: currentTask.commentCount + 1,
+                                  }
+                                : currentTask,
+                            ),
+                          )
+                        }
+                      />
                     </div>
                   </article>
                 </li>

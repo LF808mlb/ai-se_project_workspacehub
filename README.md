@@ -1,6 +1,6 @@
 # WorkspaceHub
 
-WorkspaceHub is a full-stack MERN SaaS starter built with TypeScript on both the client and server. It supports multi-tenant organizations, role-based access, projects, tasks, bookings, and per-organization feature flags.
+WorkspaceHub is a full-stack MERN SaaS project and team management web application designed for organizing work within companies. It enables users to create and manage projects, track individual tasks with comment discussions, schedule resource bookings, and control administrative permissions based on user roles. It is built with TypeScript on both the client and server.
 
 The codebase is intentionally structured so permissions, booking conflict checks, and feature-flag enforcement are isolated and easy to break later in separate exercise branches.
 
@@ -12,6 +12,7 @@ The codebase is intentionally structured so permissions, booking conflict checks
 - MongoDB + Mongoose
 - JWT authentication
 - Context API for client state
+- Vercel
 
 ## Project Structure
 
@@ -96,3 +97,17 @@ The seed script creates one organization with these users:
 - The booking overlap rule is isolated in the booking service.
 - Feature-flag checks are isolated in a reusable middleware/service path.
 - Permission logic is centralized in auth and permission helpers.
+
+## Features
+
+- Task count component onto a project's tile when viewing the Projects page.
+- Compact member preview area on the dashboard that lets users quickly see who is on their team and their roles.
+- Error alert message to display where an issue happens if a specific action fails.
+- Form validation check to inspect booking details and in case of an error, showing a clear error message right on the form before a booking can be submitted.
+- Show/hide comments toggle that shows how many comments a task has, that can expand to show the comments list in order to post, view, edit, or delete comments, or collapsed to keep the workspace clean.
+- A newly typed task comment instantly shows up at the top of the task comments list.
+- Task comment management edit and delete button options are shown only to the original author, organization owner and admins.
+
+## Frontend Live Link
+
+https://ai-se-project-workspacehub-client-rho.vercel.app/

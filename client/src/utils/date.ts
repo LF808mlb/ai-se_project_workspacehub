@@ -6,6 +6,29 @@ export const formatDateTime = (value: string | null | undefined) => {
   return new Date(value).toLocaleString();
 };
 
+/**
+ * Formats an ISO-like date string into a short month and year label.
+ *
+ * @example
+ * formatDateMonthAndYear("2026-01-18T00:00:00.000Z"); // "Jan 2026"
+ */
+export const formatDateMonthAndYear = (value: string | null | undefined) => {
+  if (!value) {
+    return "Not set";
+  }
+
+  const parsedDate = new Date(value);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "Not set";
+  }
+
+  return parsedDate.toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+  });
+};
+
 export const formatDateInput = (value: string | null | undefined) => {
   if (!value) {
     return "";

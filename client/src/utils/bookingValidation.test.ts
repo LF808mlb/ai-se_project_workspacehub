@@ -16,9 +16,7 @@ const buildFormState = (
 
 describe("validateBookingFormState", () => {
   it("returns an error when startsAt is missing", () => {
-    const result = validateBookingFormState(
-      buildFormState({ startsAt: "" }),
-    );
+    const result = validateBookingFormState(buildFormState({ startsAt: "" }));
 
     expect(result.startsAt).toBeTruthy();
   });
@@ -71,7 +69,9 @@ describe("validateBookingFormState", () => {
       }),
     );
 
-    expect(result.startsAt).toBe("Booking end time must be after the start time");
+    expect(result.startsAt).toBe(
+      "Booking end time must be after the start time",
+    );
   });
 
   it("returns an error when startsAt equals endsAt", () => {
@@ -82,7 +82,9 @@ describe("validateBookingFormState", () => {
       }),
     );
 
-    expect(result.startsAt).toBe("Booking end time must be after the start time");
+    expect(result.startsAt).toBe(
+      "Booking end time must be after the start time",
+    );
   });
 
   it("returns an empty error object when the form state is valid", () => {

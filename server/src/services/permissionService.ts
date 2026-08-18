@@ -11,6 +11,19 @@ export const canManageProject = (
   return isPrivilegedRole(actor.role) || actor.userId === String(createdBy);
 };
 
+/**
+ * Returns whether the actor can modify a comment.
+ *
+ * @example
+ * canManageComment(actor, "64f7f9d8c1b2a3d4e5f67890"); // true/false
+ */
+export const canManageComment = (
+  actor: AuthPayload,
+  authorId: string | null | undefined,
+): boolean => {
+  return isPrivilegedRole(actor.role) || actor.userId === String(authorId);
+};
+
 export const canUpdateTask = (
   actor: AuthPayload,
   assignedTo: string | null | undefined,
