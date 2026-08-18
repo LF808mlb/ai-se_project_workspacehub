@@ -110,4 +110,4 @@ The seed script creates one organization with these users:
 
 ## Frontend Live Link
 
-https://ai-se-project-workspacehub-client-git-workspac-93b026-lf-808mlb.vercel.app
+https://ai-se-project-workspacehub-client-rho.vercel.app/
